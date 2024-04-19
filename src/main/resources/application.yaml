@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: ip-service
+  data:
+    redis:
+      database: 2
+      host: redis-tiger.innodev.site
+      port: 6379
+      lettuce:
+        pool:
+          maxActive: 8
+          maxIdle: 8
+          max-wait: 10000
+          shutdown-timeout: 100
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          redis: DEBUG
+
+server:
+  port: 8081
