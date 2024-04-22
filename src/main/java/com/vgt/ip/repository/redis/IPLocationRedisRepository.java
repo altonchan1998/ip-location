@@ -1,7 +1,7 @@
 package com.vgt.ip.repository.redis;
 
 import com.vgt.ip.model.entity.IPLocation;
-import com.vgt.ip.utils.RedisKeyMapper;
+import com.vgt.ip.mapper.RedisKeyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;

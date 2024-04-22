@@ -1,7 +1,7 @@
 package com.vgt.ip.controller;
 
 import com.vgt.ip.model.dto.iplocation.IPLocationRequest;
-import com.vgt.ip.utils.IPLocationDataMapper;
+import com.vgt.ip.mapper.IPLocationDataMapper;
 import com.vgt.ip.model.dto.iplocation.IPLocationResponse;
 import com.vgt.ip.model.dto.Result;
 import com.vgt.ip.service.iplocation.IPLocationService;
@@ -42,6 +42,4 @@ public class IPLocationController {
     ) {
         ipLocationService.saveIPLocation(ipLocationDataMapper.toIPLocation(request));
     }
-
-
 }

@@ -13,8 +13,14 @@ import java.util.List;
 public class LocalCacheInitializer implements ApplicationInitializer {
     private final LocalCacheService localCacheService;
     private final List<String> ipList = List.of("127.0.0.1", "127.0.0.2");
+
     @Override
     public void run() {
         ipList.forEach(ip -> localCacheService.buildLocalCacheForIPLocation(ip).subscribe());
+    }
+
+    @Override
+    public String getName() {
+        return "LocalCacheInitializer";
     }
 }

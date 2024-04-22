@@ -16,9 +16,9 @@ public class IPApplicationInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         applicationInitializers.forEach(initializer -> {
-            log.info("Initializing {}", initializer.getClass().getName());
+            log.info("Initializing {}", initializer.getName());
             initializer.run();
-            log.info("Initialized {}", initializer.getClass().getName());
+            log.info("Initialized {}", initializer.getName());
         });
     }
 }

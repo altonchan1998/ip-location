@@ -1,4 +1,4 @@
-package com.vgt.ip.utils;
+package com.vgt.ip.mapper;
 
 import com.vgt.ip.constant.ResponseConstants;
 import com.vgt.ip.model.dto.iplocation.IPLocationRequest;

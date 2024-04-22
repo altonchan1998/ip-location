@@ -13,11 +13,13 @@ import static com.vgt.ip.constant.CacheConstants.CACHE_MANAGER_IP_LOCATION;
 @EnableCaching
 @Configuration
 public class LocalCacheConfig {
+
     @Bean(CACHE_MANAGER_IP_LOCATION)
     public CacheManager ipLocationCacheManager() {
         CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
         caffeineCacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(4000));
         caffeineCacheManager.setAsyncCacheMode(true);
+
         return caffeineCacheManager;
     }
 }
