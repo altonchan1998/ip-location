@@ -1,4 +1,4 @@
-package com.vgt.ip.schelude;
+package com.vgt.ip.schedule;
 
 
 import com.vgt.ip.service.iplocationversion.IPLocationVersionService;
