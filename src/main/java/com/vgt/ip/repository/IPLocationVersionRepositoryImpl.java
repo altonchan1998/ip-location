@@ -14,11 +14,6 @@ public class IPLocationVersionRepositoryImpl implements IPLocationVersionReposit
 
     @Override
     public Long getIPLocationVersion() {
-        return ipLocationVersionRedisRepository.getIPLocationVersion();
-    }
-
-    @Override
-    public void updateIPLocationVersion() {
-        ipLocationVersionRedisRepository.updateIPLocationVersion();
+        return ipLocationVersionRedisRepository.getRedisIPLocationVersion();
     }
 }
