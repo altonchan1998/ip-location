@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class IPAddressV4 {
+public class IPAddress {
     private final String ip;
 }

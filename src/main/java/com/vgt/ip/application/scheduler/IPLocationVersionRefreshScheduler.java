@@ -2,6 +2,7 @@ package com.vgt.ip.application.scheduler;
 
 
 import com.vgt.ip.dataaccess.iplocationversion.IPLocationVersionService;
+import com.vgt.ip.domain.applicationservice.port.input.IPLocationApplicationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,12 +15,12 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Component
 public class IPLocationVersionRefreshScheduler {
-    private final IPLocationVersionService ipLocationVersionService;
+    private final IPLocationApplicationService ipLocationApplicationService;
 
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
     public void run() {
         log.info("Local IPLocationVersion refreshing started");
-        ipLocationVersionService.refreshLocalIPLocationVersion();
+        ipLocationApplicationService.refreshLocalIPLocationVersion();
         log.info("Local IPLocationVersion refreshing completed");
     }
 }

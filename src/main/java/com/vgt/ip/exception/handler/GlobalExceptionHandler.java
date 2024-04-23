@@ -1,7 +1,7 @@
-package com.vgt.ip.domain.core.exception.handler;
+package com.vgt.ip.exception.handler;
 
 import com.vgt.ip.constant.ResponseConstants;
-import com.vgt.ip.domain.core.exception.IPLocationNotFoundException;
+import com.vgt.ip.exception.IPLocationNotFoundException;
 import com.vgt.ip.domain.applicationservice.dto.Result;
 import io.micrometer.core.instrument.config.validate.ValidationException;
 import jakarta.validation.ConstraintViolation;

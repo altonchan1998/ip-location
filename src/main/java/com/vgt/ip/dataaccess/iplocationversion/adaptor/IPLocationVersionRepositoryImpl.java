@@ -14,8 +14,22 @@ import reactor.core.publisher.Mono;
 public class IPLocationVersionRepositoryImpl implements IPLocationVersionRepository {
     private final IPLocationVersionRedisRepository ipLocationVersionRedisRepository;
 
+    private volatile Long ipLocationLocalVersion = -1L;
+
     @Override
-    public Mono<Long> getIPLocationVersion() {
+    public void saveIPLocationLocalVersion(Long version) {
+        ipLocationLocalVersion = version;
+    }
+
+    @Override
+    public Long findIpLocationLocalVersion() {
+        return ipLocationLocalVersion;
+    }
+
+    @Override
+    public Mono<Long> findRemoteIPLocationVersion() {
         return ipLocationVersionRedisRepository.getRedisIPLocationVersion();
     }
+
+
 }

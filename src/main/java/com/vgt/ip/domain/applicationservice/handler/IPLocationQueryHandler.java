@@ -3,8 +3,9 @@ package com.vgt.ip.domain.applicationservice.handler;
 import com.vgt.ip.domain.applicationservice.dto.Result;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
-import com.vgt.ip.domain.applicationservice.mapper.IPLocationDataMapper;
-import com.vgt.ip.domain.core.exception.IPLocationNotFoundException;
+import com.vgt.ip.domain.applicationservice.mapper.IPLocationApplicationServiceDataMapper;
+import com.vgt.ip.domain.core.valueobject.IPAddress;
+import com.vgt.ip.exception.IPLocationNotFoundException;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +15,16 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class IPLocationQueryHandler {
+public class IPLocationQueryHandler implements Handler<IPLocationQuery, Mono<Result<IPLocationResponse>>> {
 
-    private final IPLocationDataMapper ipLocationDataMapper;
+    private final IPLocationApplicationServiceDataMapper ipLocationApplicationServiceDataMapper;
     private final IPLocationRepository ipLocationRepository;
 
     public Mono<Result<IPLocationResponse>> handle(IPLocationQuery query) {
-        String ip = query.getIp();
-        return ipLocationRepository.getIPLocationByIP(ip)
-                .map(ipLocationDataMapper::toResult)
-                .switchIfEmpty(Mono.error(new IPLocationNotFoundException(ip)));
+        IPAddress ipAddress = new IPAddress(query.getIp());
+
+        return ipLocationRepository.findByIPAddress(ipAddress)
+                .map(ipLocationApplicationServiceDataMapper::toResult)
+                .switchIfEmpty(Mono.error(new IPLocationNotFoundException("IPLocation not found. IP: " + query.getIp())));
     }
 }

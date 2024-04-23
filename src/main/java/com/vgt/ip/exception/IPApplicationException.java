@@ -1,4 +1,4 @@
-package com.vgt.ip.domain.core.exception;
+package com.vgt.ip.exception;
 
 public class IPApplicationException extends RuntimeException {
 

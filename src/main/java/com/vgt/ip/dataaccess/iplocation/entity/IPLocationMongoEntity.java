@@ -1,4 +1,4 @@
-package com.vgt.ip.dataaccess.iplocation.entity.mongo;
+package com.vgt.ip.dataaccess.iplocation.entity;
 
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Document("ip_location_v4")
 @Data
-public class IPLocationV4MongoEntity implements Serializable {
+public class IPLocationMongoEntity implements Serializable {
     private String primaryInfo;
     private String ip;
     private Long timestamp;

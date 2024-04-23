@@ -1,6 +1,6 @@
 package com.vgt.ip.config;
 
-import com.vgt.ip.model.entity.IPLocation;
+import com.vgt.ip.dataaccess.iplocation.entity.IPLocationRedisEntity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -15,10 +15,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     @Bean
-    ReactiveRedisOperations<String, IPLocation> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
-        Jackson2JsonRedisSerializer<IPLocation> serializer = new Jackson2JsonRedisSerializer<>(IPLocation.class);
-        RedisSerializationContext.RedisSerializationContextBuilder<String, IPLocation> builder = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
-        RedisSerializationContext<String, IPLocation> context = builder.value(serializer).build();
+    ReactiveRedisOperations<String, IPLocationRedisEntity> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
+        Jackson2JsonRedisSerializer<IPLocationRedisEntity> serializer = new Jackson2JsonRedisSerializer<>(IPLocationRedisEntity.class);
+        RedisSerializationContext.RedisSerializationContextBuilder<String, IPLocationRedisEntity> builder = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
+        RedisSerializationContext<String, IPLocationRedisEntity> context = builder.value(serializer).build();
 
         return new ReactiveRedisTemplate<>(factory, context);
     }

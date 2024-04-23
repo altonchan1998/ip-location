@@ -1,12 +1,14 @@
-package com.vgt.ip.domain.core.valueobject;
+package com.vgt.ip.dataaccess.iplocation.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IPAddressV6 {
+public class IPLocationCaffeineEntity {
     private String ip;
 }

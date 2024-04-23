@@ -1,5 +1,4 @@
-package com.vgt.ip.domain.applicationservice.dto.iplocation;
-
+package com.vgt.ip.dataaccess.iplocation.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IPLocationDTO {
-    private String primaryInfo;
+public class IPLocationRedisEntity {
+    private String ip;
 }
