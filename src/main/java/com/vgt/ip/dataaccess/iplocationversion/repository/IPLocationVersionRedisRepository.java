@@ -1,5 +1,6 @@
 package com.vgt.ip.dataaccess.iplocationversion.repository;
 
+import com.vgt.ip.exception.IPApplicationDataAccessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
@@ -17,7 +18,9 @@ public class IPLocationVersionRedisRepository {
 
     public Mono<Long> getRedisIPLocationVersion() {
         String key = REDIS_KEY_IP_LOCATION_VERSION;
-        log.info("Fetching IPLocationVersion from redis - key: {}", key);
-        return ipLocationVersionOps.opsForValue().get(key);
+        return ipLocationVersionOps.opsForValue().get(key)
+                .doOnSubscribe(s -> log.debug("Fetching IPLocationVersion from redis - key: {}", key))
+                .doOnSuccess(version -> log.debug("Fetch IPLocationVersion from redis success - version: {}", version))
+                .onErrorMap(e -> new IPApplicationDataAccessException("Fetch IPLocationVersion from redis failed"));
     }
 }

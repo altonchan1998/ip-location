@@ -11,6 +11,7 @@ import com.vgt.ip.domain.core.valueobject.IPAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,19 +23,13 @@ import java.util.Objects;
 public class IPLocationRepositoryImpl implements IPLocationRepository {
     private final IPLocationRedisRepositoryImpl ipLocationRedisRepositoryImpl;
     private final IPLocationMongoRepositoryImpl ipLocationMongoRepositoryImpl;
-    private final IPLocationCaffeineRepositoryImpl ipLocationCaffeineRepository;
+    private final IPLocationCaffeineRepositoryImpl ipLocationCaffeineRepositoryImpl;
 
     private final IPLocationDataAccessMapper ipLocationDataAccessMapper;
 
-    @Override
-    public void rebuildLocalCache(List<String> ipList) {
+    public Mono<Void> clearLocalCache() {
         log.info("Rebuilding local cache");
-        ipLocationCaffeineRepository.cleanAll();
-        ipList.forEach(
-                ip -> ipLocationMongoRepositoryImpl.findByIP(ip)
-                        .subscribe(ipLocationCaffeineRepository::save)
-        );
-        log.info("Local cache rebuilt");
+        return ipLocationCaffeineRepositoryImpl.cleanAll();
     }
 
     @Override
@@ -44,15 +39,24 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
         }
 
         String ip = ipAddress.getIp();
-        return ipLocationCaffeineRepository.findIPLocationByIP(ip)
+        return ipLocationCaffeineRepositoryImpl.findIPLocationByIP(ip)
                 .switchIfEmpty(ipLocationRedisRepositoryImpl.findByIP(ip))
-                .switchIfEmpty(ipLocationMongoRepositoryImpl.findByIP(ip).flatMap(this::saveToRedis))
+                .switchIfEmpty(ipLocationMongoRepositoryImpl.findByIP(ip).doOnNext(this::saveToRedis))
                 .map(ipLocationDataAccessMapper::toIPLocationDTO);
     }
 
-    private Mono<IPLocationMongoEntity> saveToRedis(IPLocationMongoEntity entity) {
-        log.info("Saving {} to Redis", entity.getIp());
-        return ipLocationRedisRepositoryImpl.save(entity)
-                .then(Mono.just(entity));
+    @Override
+    public Mono<List<Void>> buildLocalCache(List<String> ipList) {
+        return Flux.fromIterable(ipList)
+                .flatMap(ipLocationRedisRepositoryImpl::findByIP)
+                .flatMap(ipLocationCaffeineRepositoryImpl::save)
+                .collectList();
+    }
+
+    private void saveToRedis(IPLocationMongoEntity entity) {
+        ipLocationRedisRepositoryImpl.save(entity)
+                .doOnSubscribe(s -> log.debug("Saving IPLocation of {} to Redis", entity.getIp()))
+                .doOnSuccess(s -> log.debug("Saved IPLocation of {} to Redis", entity.getIp()))
+                .subscribe();
     }
 }

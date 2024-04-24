@@ -1,7 +1,6 @@
 package com.vgt.ip.application.controller;
 
-import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
-import com.vgt.ip.dataaccess.iplocation.repository.IPLocationCaffeineRepositoryImpl;
+
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
 import com.vgt.ip.domain.applicationservice.dto.Result;
@@ -18,11 +17,8 @@ public class IPLocationController {
     private final IPLocationApplicationService ipLocationApplicationService;
 
     @GetMapping("/ipLocation")
-    public Mono<Result<IPLocationResponse>> getIPLocationByIP(
-            @RequestParam(name = "ip") String ip
-    ) {
-        log.info("getIPLocationByIP: {}", ip);
-        return ipLocationApplicationService.getIPLocationByIP(new IPLocationQuery(ip));
+    public Mono<Result<IPLocationResponse>> getIPLocationByIP(@RequestParam(name = "ip") String ip) {
+        return ipLocationApplicationService.getIPLocationByIP(new IPLocationQuery(ip))
+                .doOnSuccess(result -> log.info("getIPLocationByIP: {}", ip));
     }
-
 }

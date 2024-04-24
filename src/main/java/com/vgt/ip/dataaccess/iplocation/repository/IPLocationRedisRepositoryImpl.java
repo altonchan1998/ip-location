@@ -1,6 +1,8 @@
 package com.vgt.ip.dataaccess.iplocation.repository;
 
 import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
+import com.vgt.ip.exception.IPApplicationDataAccessException;
+import com.vgt.ip.exception.IPApplicationException;
 import com.vgt.ip.mapper.RedisKeyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ public class IPLocationRedisRepositoryImpl {
                 .opsForValue()
                 .get(redisKeyMapper.toIPLocationKey(ip))
                 .doOnSubscribe(s -> log.debug("Finding IPLocation of {} in Redis", ip))
-                .doOnError(e -> log.error("Find IPLocation of {} in Redis failed", ip, e));
+                .onErrorMap(it -> new IPApplicationException("Find IPLocation of " + ip + " in Redis failed"));
     }
 
     public Mono<Boolean> save(IPLocationMongoEntity entity) {
@@ -29,6 +31,6 @@ public class IPLocationRedisRepositoryImpl {
                 .opsForValue()
                 .set(redisKeyMapper.toIPLocationKey(entity.getIp()), entity)
                 .doOnSuccess(it -> log.debug("Save IPLocation to Redis success, ip: {}", entity.getIp()))
-                .doOnError(e -> log.error("save IPLocation to Redis failed, ip: {}", entity.getIp(), e));
+                .onErrorMap(e -> new IPApplicationDataAccessException("Save IPLocation of " + entity.getIp() + " to Redis failed"));
     }
 }

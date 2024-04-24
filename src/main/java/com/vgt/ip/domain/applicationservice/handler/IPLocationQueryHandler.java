@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class IPLocationQueryHandler implements Handler<IPLocationQuery, Mono<Result<IPLocationResponse>>> {
+public class IPLocationQueryHandler implements Handler<IPLocationQuery, Result<IPLocationResponse>> {
 
     private final IPLocationApplicationServiceDataMapper ipLocationApplicationServiceDataMapper;
     private final IPLocationRepository ipLocationRepository;
@@ -28,4 +28,5 @@ public class IPLocationQueryHandler implements Handler<IPLocationQuery, Mono<Res
                 .map(ipLocationApplicationServiceDataMapper::toResult)
                 .switchIfEmpty(Mono.error(new IPLocationNotFoundException(query.getIp())));
     }
+
 }

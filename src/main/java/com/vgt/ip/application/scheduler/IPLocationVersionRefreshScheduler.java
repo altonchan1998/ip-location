@@ -1,7 +1,6 @@
 package com.vgt.ip.application.scheduler;
 
 
-import com.vgt.ip.dataaccess.iplocationversion.IPLocationVersionService;
 import com.vgt.ip.domain.applicationservice.port.input.IPLocationApplicationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,10 @@ public class IPLocationVersionRefreshScheduler {
 
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
     public void run() {
-        log.info("Local IPLocationVersion refreshing started");
-        ipLocationApplicationService.refreshLocalIPLocationVersion();
-        log.info("Local IPLocationVersion refreshing completed");
+        ipLocationApplicationService.refreshLocalIPLocationVersion()
+                .doOnSubscribe(unused -> log.info("Local IPLocationVersion refresh started"))
+                .doOnSuccess(unused -> log.info("Local IPLocationVersion refresh finished"))
+                .doOnError(error -> log.error("Local IPLocationVersion refresh failed", error))
+                .subscribe();
     }
 }

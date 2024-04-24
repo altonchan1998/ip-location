@@ -1,6 +1,8 @@
 package com.vgt.ip.domain.applicationservice.handler;
 
 
+import reactor.core.publisher.Mono;
+
 public interface Handler<T, R> {
-    R handle(T t);
+    Mono<R> handle(T t);
 }

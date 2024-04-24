@@ -4,7 +4,7 @@ package com.vgt.ip.domain.applicationservice.port.input;
 import com.vgt.ip.domain.applicationservice.dto.Result;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
-import com.vgt.ip.domain.applicationservice.handler.IPLocationLocalCacheRebuildCommandHandler;
+import com.vgt.ip.domain.applicationservice.handler.IPLocationLocalCacheBuildCommandHandler;
 import com.vgt.ip.domain.applicationservice.handler.IPLocationQueryHandler;
 import com.vgt.ip.domain.applicationservice.handler.IPLocationVersionRefreshCommandHandler;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.List;
 public class IPLocationApplicationServiceImpl implements IPLocationApplicationService {
     private final IPLocationQueryHandler ipLocationQueryHandler;
     private final IPLocationVersionRefreshCommandHandler versionRefreshCommandHandler;
-    private final IPLocationLocalCacheRebuildCommandHandler ipLocationLocalCacheRebuildCommandHandler;
+    private final IPLocationLocalCacheBuildCommandHandler ipLocationLocalCacheBuildCommandHandler;
 
 
     @Override
@@ -29,13 +29,13 @@ public class IPLocationApplicationServiceImpl implements IPLocationApplicationSe
     }
 
     @Override
-    public void refreshLocalIPLocationVersion() {
-        versionRefreshCommandHandler.handle(null);
+    public Mono<Void> refreshLocalIPLocationVersion() {
+        return versionRefreshCommandHandler.handle(null);
     }
 
     @Override
     public void rebuildIPLocationLocalCache(List<String> ip) {
-        ipLocationLocalCacheRebuildCommandHandler.handle(ip);
+        ipLocationLocalCacheBuildCommandHandler.handle(ip);
     }
 
 }

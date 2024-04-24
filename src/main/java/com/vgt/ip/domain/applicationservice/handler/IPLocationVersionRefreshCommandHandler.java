@@ -5,6 +5,7 @@ import com.vgt.ip.domain.applicationservice.port.output.IPLocationVersionReposit
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -31,9 +32,9 @@ public class IPLocationVersionRefreshCommandHandler implements Handler<Void, Voi
     private final BiPredicate<Long, Long> canUpdateIPLocationVersion = (remoteVersion, localVersion) -> Objects.isNull(localVersion) || remoteVersion > localVersion;
 
     @Override
-    public Void handle(Void unused) {
-        ipLocationVersionRepository.findRemoteIPLocationVersion()
-                .subscribe(this::updateIPLocationVersion);
-        return null;
+    public Mono<Void> handle(Void unused) {
+        return ipLocationVersionRepository.findRemoteIPLocationVersion()
+                .doOnSuccess(this::updateIPLocationVersion)
+                .then();
     }
 }

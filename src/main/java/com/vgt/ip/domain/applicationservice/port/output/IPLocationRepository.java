@@ -8,7 +8,9 @@ import java.util.List;
 
 
 public interface IPLocationRepository {
-    void rebuildLocalCache(List<String> ip);
+    Mono<Void> clearLocalCache();
 
     Mono<IPLocationDTO> findByIPAddress(IPAddress ipAddress);
+
+    Mono<List<Void>> buildLocalCache(List<String> ipList);
 }
