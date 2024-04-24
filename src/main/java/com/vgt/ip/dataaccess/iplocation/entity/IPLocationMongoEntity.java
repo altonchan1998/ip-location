@@ -1,34 +1,26 @@
 package com.vgt.ip.dataaccess.iplocation.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-@Document("ip_location_v4")
+@Document(collection = "ip_location")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class IPLocationMongoEntity implements Serializable {
-    private String primaryInfo;
+    @Id
+    private String id;
+    private String primaryInfoKey;
     private String ip;
-    private Long timestamp;
+    private Long version;
     private Map<String, IPLocationDetailEntity> allInfo = Collections.emptyMap();
-
-    private static class IPLocationDetailEntity {
-        private String country;
-        private String province;
-        private String distinct;
-        private String city;
-        private String lang;
-        private String isp;
-        private String description;
-        private String isChinaRegion;
-        private String region;
-        private String isoCode;
-        private String timeZone;
-        private String ip;
-        private String source;
-    }
-
 }

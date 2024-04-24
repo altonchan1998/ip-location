@@ -1,5 +1,7 @@
 package com.vgt.ip.application.controller;
 
+import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
+import com.vgt.ip.dataaccess.iplocation.repository.IPLocationCaffeineRepositoryImpl;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
 import com.vgt.ip.domain.applicationservice.dto.Result;
@@ -22,4 +24,5 @@ public class IPLocationController {
         log.info("getIPLocationByIP: {}", ip);
         return ipLocationApplicationService.getIPLocationByIP(new IPLocationQuery(ip));
     }
+
 }

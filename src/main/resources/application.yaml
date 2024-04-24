@@ -2,8 +2,8 @@ spring:
   application:
     name: ip-service
   data:
-    mongo:
-      url: mongodb://localhost:27017/ipdb
+    mongodb:
+      uri: mongodb://localhost:27017/ipdb
     redis:
       database: 2
       host: redis-tiger.innodev.site
@@ -17,10 +17,8 @@ spring:
 
 logging:
   level:
-    org:
-      springframework:
-        data:
-          redis: DEBUG
+    com:
+      vgt: DEBUG
 
 server:
   port: 8081

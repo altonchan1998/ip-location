@@ -16,7 +16,7 @@ public class LocalCacheInitializer implements ApplicationInitializer {
 
     @Override
     public void run() {
-        ipLocationApplicationService.ipLocationLocalCacheRebuildCommand(ipList);
+        ipLocationApplicationService.rebuildIPLocationLocalCache(ipList);
     }
 
     @Override

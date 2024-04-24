@@ -1,6 +1,6 @@
 package com.vgt.ip.config;
 
-import com.vgt.ip.dataaccess.iplocation.entity.IPLocationRedisEntity;
+import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -14,11 +14,25 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+//    @Bean
+//    ReactiveRedisOperations<String, IPLocationMongoEntity> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
+//        Jackson2JsonRedisSerializer<IPLocationMongoEntity> serializer = new Jackson2JsonRedisSerializer<>(IPLocationMongoEntity.class);
+//        RedisSerializationContext.RedisSerializationContextBuilder<String, IPLocationMongoEntity> builder = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
+//        RedisSerializationContext<String, IPLocationMongoEntity> context = builder.value(serializer).build();
+//
+//        return new ReactiveRedisTemplate<>(factory, context);
+//    }
     @Bean
-    ReactiveRedisOperations<String, IPLocationRedisEntity> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
-        Jackson2JsonRedisSerializer<IPLocationRedisEntity> serializer = new Jackson2JsonRedisSerializer<>(IPLocationRedisEntity.class);
-        RedisSerializationContext.RedisSerializationContextBuilder<String, IPLocationRedisEntity> builder = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
-        RedisSerializationContext<String, IPLocationRedisEntity> context = builder.value(serializer).build();
+    ReactiveRedisOperations<String, IPLocationMongoEntity> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        Jackson2JsonRedisSerializer<IPLocationMongoEntity> ipLocationMongoEntityJackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(IPLocationMongoEntity.class);
+
+        RedisSerializationContext<String, IPLocationMongoEntity> context = RedisSerializationContext.<String, IPLocationMongoEntity>newSerializationContext()
+                .key(stringRedisSerializer)
+                .value(ipLocationMongoEntityJackson2JsonRedisSerializer)
+                .hashKey(stringRedisSerializer)
+                .hashValue(ipLocationMongoEntityJackson2JsonRedisSerializer)
+                .build();
 
         return new ReactiveRedisTemplate<>(factory, context);
     }

@@ -34,7 +34,7 @@ public class IPLocationApplicationServiceImpl implements IPLocationApplicationSe
     }
 
     @Override
-    public void ipLocationLocalCacheRebuildCommand(List<String> ip) {
+    public void rebuildIPLocationLocalCache(List<String> ip) {
         ipLocationLocalCacheRebuildCommandHandler.handle(ip);
     }
 

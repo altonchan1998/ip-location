@@ -10,5 +10,5 @@ import java.util.List;
 public interface IPLocationApplicationService {
     Mono<Result<IPLocationResponse>> getIPLocationByIP(IPLocationQuery ipLocationQuery);
     void refreshLocalIPLocationVersion();
-    void ipLocationLocalCacheRebuildCommand(List<String> ipList);
+    void rebuildIPLocationLocalCache(List<String> ipList);
 }

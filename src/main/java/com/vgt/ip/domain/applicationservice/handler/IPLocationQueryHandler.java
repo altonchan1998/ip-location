@@ -21,10 +21,11 @@ public class IPLocationQueryHandler implements Handler<IPLocationQuery, Mono<Res
     private final IPLocationRepository ipLocationRepository;
 
     public Mono<Result<IPLocationResponse>> handle(IPLocationQuery query) {
+        log.info("IPLocationQueryHandler: {}", query);
         IPAddress ipAddress = new IPAddress(query.getIp());
 
         return ipLocationRepository.findByIPAddress(ipAddress)
                 .map(ipLocationApplicationServiceDataMapper::toResult)
-                .switchIfEmpty(Mono.error(new IPLocationNotFoundException("IPLocation not found. IP: " + query.getIp())));
+                .switchIfEmpty(Mono.error(new IPLocationNotFoundException(query.getIp())));
     }
 }
