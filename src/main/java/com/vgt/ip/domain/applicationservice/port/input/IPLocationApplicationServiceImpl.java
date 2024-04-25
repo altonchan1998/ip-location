@@ -3,7 +3,6 @@ package com.vgt.ip.domain.applicationservice.port.input;
 
 import com.vgt.ip.domain.applicationservice.dto.Result;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
-import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
 import com.vgt.ip.domain.applicationservice.handler.IPLocationLocalCacheBuildCommandHandler;
 import com.vgt.ip.domain.applicationservice.handler.IPLocationQueryHandler;
 import com.vgt.ip.domain.applicationservice.handler.IPLocationVersionRefreshCommandHandler;
@@ -24,7 +23,7 @@ public class IPLocationApplicationServiceImpl implements IPLocationApplicationSe
 
 
     @Override
-    public Mono<Result<IPLocationResponse>> getIPLocationByIP(IPLocationQuery ipLocationQuery) {
+    public Mono<Result<?>> getIPLocationByIP(IPLocationQuery ipLocationQuery) {
         return ipLocationQueryHandler.handle(ipLocationQuery);
     }
 

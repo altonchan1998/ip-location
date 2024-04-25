@@ -4,9 +4,9 @@ import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
 import com.vgt.ip.dataaccess.iplocation.mapper.IPLocationDataAccessMapper;
 import com.vgt.ip.dataaccess.iplocation.repository.IPLocationCaffeineRepositoryImpl;
 import com.vgt.ip.dataaccess.iplocation.repository.IPLocationMongoRepositoryImpl;
+import com.vgt.ip.dataaccess.iplocation.repository.IPLocationRedisRepositoryImpl;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationDTO;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationRepository;
-import com.vgt.ip.dataaccess.iplocation.repository.IPLocationRedisRepositoryImpl;
 import com.vgt.ip.domain.core.valueobject.IPAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,8 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
         return ipLocationCaffeineRepositoryImpl.findIPLocationByIP(ip)
                 .switchIfEmpty(ipLocationRedisRepositoryImpl.findByIP(ip))
                 .switchIfEmpty(ipLocationMongoRepositoryImpl.findByIP(ip).doOnNext(this::saveToRedis))
-                .map(ipLocationDataAccessMapper::toIPLocationDTO);
+                .map(ipLocationDataAccessMapper::toIPLocationDTO)
+                .doOnError(e -> log.error("Find IPLocation of {} failed: {}", ip, e.getMessage()));
     }
 
     @Override

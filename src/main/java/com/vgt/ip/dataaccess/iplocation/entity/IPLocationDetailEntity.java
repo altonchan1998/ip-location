@@ -18,7 +18,7 @@ public class IPLocationDetailEntity implements Serializable {
     private String lang;
     private String isp;
     private String description;
-    private String isChinaRegion;
+    private Boolean isChinaRegion;
     private String region;
     @JsonProperty("iso_code")
     private String isoCode;

@@ -23,7 +23,11 @@ public class IPLocationRedisRepositoryImpl {
                 .opsForValue()
                 .get(redisKeyMapper.toIPLocationKey(ip))
                 .doOnSubscribe(s -> log.debug("Finding IPLocation of {} in Redis", ip))
-                .onErrorMap(it -> new IPApplicationException("Find IPLocation of " + ip + " in Redis failed"));
+                .onErrorMap(it -> {
+                    log.error("Find IPLocation of {} in Redis failed: {}", ip, it.getMessage());
+                    return new IPApplicationException("Find IPLocation of " + ip + " in Redis failed");
+                });
+//                .doOnError(e -> log.error(String.valueOf(e)));
     }
 
     public Mono<Boolean> save(IPLocationMongoEntity entity) {
@@ -31,6 +35,9 @@ public class IPLocationRedisRepositoryImpl {
                 .opsForValue()
                 .set(redisKeyMapper.toIPLocationKey(entity.getIp()), entity)
                 .doOnSuccess(it -> log.debug("Save IPLocation to Redis success, ip: {}", entity.getIp()))
-                .onErrorMap(e -> new IPApplicationDataAccessException("Save IPLocation of " + entity.getIp() + " to Redis failed"));
+                .onErrorMap(e -> {
+                    log.error("Save IPLocation of {} to Redis failed: {}", entity.getIp(), e.getMessage());
+                    return new IPApplicationDataAccessException("Save IPLocation of " + entity.getIp() + " to Redis failed");
+                });
     }
 }

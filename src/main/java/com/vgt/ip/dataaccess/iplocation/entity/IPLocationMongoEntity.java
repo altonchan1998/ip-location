@@ -19,7 +19,7 @@ import java.util.Map;
 public class IPLocationMongoEntity implements Serializable {
     @Id
     private String id;
-    private String primaryInfoKey;
+    private String primaryInfo;
     private String ip;
     private Long version;
     private Map<String, IPLocationDetailEntity> allInfo = Collections.emptyMap();

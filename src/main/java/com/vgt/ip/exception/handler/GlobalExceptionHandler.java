@@ -1,18 +1,19 @@
 package com.vgt.ip.exception.handler;
 
 import com.vgt.ip.constant.ResponseConstants;
-import com.vgt.ip.exception.IPLocationNotFoundException;
 import com.vgt.ip.domain.applicationservice.dto.Result;
+import com.vgt.ip.exception.IPLocationNotFoundException;
 import io.micrometer.core.instrument.config.validate.ValidationException;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import jakarta.validation.ConstraintViolationException;
 
-
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,9 +21,10 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result<Void> handleException(Exception exception) {
-//        log.error(exception.getMessage(), exception);
-        return new Result<>(ResponseConstants.RESPONSE_CODE_ERROR, null, "Unexpected error");
+    public Result<Map<Void, Void>> handleException(Exception exception) {
+        log.error(exception.getMessage(), exception);
+//        IpApplication.ctx.close();
+        return new Result<>(ResponseConstants.RESPONSE_CODE_ERROR, Collections.emptyMap(), "Unexpected error");
     }
 
     @ExceptionHandler(ValidationException.class)

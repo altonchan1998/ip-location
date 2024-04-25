@@ -11,17 +11,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IPLocationResponse {
 
-    private String ip;
     private String country;
-    private String countryCode;
-    private String region;
-    private String regionName;
+    private String province;
+    private String district;
     private String city;
-    private String zip;
-    private double lat;
-    private double lon;
-    private String timezone;
+    private String lang;
     private String isp;
-    private String org;
-    private String query;
+    private String description;
+    private Boolean isChinaRegion;
+    private String region;
+    private Boolean vd001ThirdPayEnabled;
+    private String isoCode;
+    private String timeZone;
+    private String ip;
+    private Integer lib;
 }

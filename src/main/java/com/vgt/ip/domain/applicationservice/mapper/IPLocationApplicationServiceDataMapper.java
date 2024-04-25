@@ -1,10 +1,10 @@
 package com.vgt.ip.domain.applicationservice.mapper;
 
 import com.vgt.ip.constant.ResponseConstants;
+import com.vgt.ip.domain.applicationservice.dto.Result;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationDTO;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
-import com.vgt.ip.domain.applicationservice.dto.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +27,20 @@ public class IPLocationApplicationServiceDataMapper {
 
     public IPLocationResponse toResponse(IPLocationDTO location) {
         return IPLocationResponse.builder()
+                .ip(location.getIp())
+                .country(location.getCountry())
+                .province(location.getProvince())
+                .city(location.getCity())
+                .region(location.getRegion())
+                .district(location.getDistrict())
+                .isp(location.getIsp())
+                .description(location.getDescription())
+                .lang(location.getLang())
+                .isChinaRegion(location.getIsChinaRegion())
+                .vd001ThirdPayEnabled(location.getVd001ThirdPayEnabled())
+                .isoCode(location.getIsoCode())
+                .timeZone(location.getTimeZone())
+                .region(location.getRegion())
                 .build();
     }
 
