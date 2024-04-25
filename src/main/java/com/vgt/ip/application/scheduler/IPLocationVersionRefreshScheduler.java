@@ -16,12 +16,8 @@ import java.util.concurrent.TimeUnit;
 public class IPLocationVersionRefreshScheduler {
     private final IPLocationApplicationService ipLocationApplicationService;
 
-    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS, initialDelay = 5)
     public void run() {
-        ipLocationApplicationService.refreshLocalIPLocationVersion()
-                .doOnSubscribe(unused -> log.info("Local IPLocationVersion refresh started"))
-                .doOnSuccess(unused -> log.info("Local IPLocationVersion refresh finished"))
-                .doOnError(error -> log.error("Local IPLocationVersion refresh failed", error))
-                .subscribe();
+        ipLocationApplicationService.refreshLocalIPLocationVersion().subscribe();
     }
 }

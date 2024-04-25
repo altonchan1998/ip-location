@@ -10,18 +10,17 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class LocalCacheInitializer implements ApplicationInitializer {
+public class LocalIPLocationVersionInitializer implements ApplicationInitializer {
     private final IPLocationApplicationService ipLocationApplicationService;
-    private final List<String> ipList = List.of("127.0.0.1", "127.0.0.2");
 
     @Override
     public void run() {
-        ipLocationApplicationService.buildIPLocationLocalCache(ipList)
+        ipLocationApplicationService.refreshLocalIPLocationVersion()
                 .subscribe();
     }
 
     @Override
     public String getName() {
-        return "LocalCacheInitializer";
+        return "LocalIPLocationVersionInitializer";
     }
 }

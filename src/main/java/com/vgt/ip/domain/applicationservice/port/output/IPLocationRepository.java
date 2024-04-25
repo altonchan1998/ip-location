@@ -10,7 +10,9 @@ import java.util.List;
 public interface IPLocationRepository {
     Mono<Void> clearLocalCache();
 
+    Mono<Void> removeByIPAndVersionLessThan(String ip, Long version);
+
     Mono<IPLocationDTO> findByIPAddress(IPAddress ipAddress);
 
-    Mono<List<Void>> buildLocalCache(List<String> ipList);
+    Mono<Void> buildLocalCache(List<String> ipList);
 }

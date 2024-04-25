@@ -28,8 +28,16 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
     private final IPLocationDataAccessMapper ipLocationDataAccessMapper;
 
     public Mono<Void> clearLocalCache() {
-        log.info("Rebuilding local cache");
         return ipLocationCaffeineRepositoryImpl.cleanAll();
+    }
+
+    @Override
+    public Mono<Void> removeByIPAndVersionLessThan(String ip, Long version) {
+        return Mono.zip(
+                ipLocationCaffeineRepositoryImpl.deleteByKey(ip),
+                ipLocationRedisRepositoryImpl.deleteByIP(ip),
+                ipLocationMongoRepositoryImpl.deleteByIpAndVersionLessThan(ip, version)
+        ).then();
     }
 
     @Override
@@ -46,11 +54,12 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
     }
 
     @Override
-    public Mono<List<Void>> buildLocalCache(List<String> ipList) {
+    public Mono<Void> buildLocalCache(List<String> ipList) {
         return Flux.fromIterable(ipList)
                 .flatMap(ipLocationRedisRepositoryImpl::findByIP)
-                .flatMap(ipLocationCaffeineRepositoryImpl::save)
-                .collectList();
+                .doOnNext(it -> ipLocationCaffeineRepositoryImpl.save(it).subscribe())
+                .then();
+
     }
 
     private void saveToRedis(IPLocationMongoEntity entity) {

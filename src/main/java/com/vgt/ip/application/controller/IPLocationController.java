@@ -19,6 +19,6 @@ public class IPLocationController {
     @GetMapping("/ipLocation")
     public Mono<Result<IPLocationResponse>> getIPLocationByIP(@RequestParam(name = "ip") String ip) {
         return ipLocationApplicationService.getIPLocationByIP(new IPLocationQuery(ip))
-                .doOnSuccess(result -> log.info("getIPLocationByIP: {}", ip));
+                .doOnSubscribe(result -> log.info("getIPLocationByIP: {}", ip));
     }
 }

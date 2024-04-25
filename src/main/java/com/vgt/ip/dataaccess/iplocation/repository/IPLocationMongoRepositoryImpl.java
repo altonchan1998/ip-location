@@ -19,4 +19,8 @@ public class IPLocationMongoRepositoryImpl {
                 .doOnSubscribe(s -> log.debug("Finding IPLocation of {} in Mongo", ip))
                 .onErrorMap(e -> new IPApplicationDataAccessException("Find IPLocation of " + ip + " in Mongo failed"));
     }
+
+    public Mono<Void> deleteByIpAndVersionLessThan(String ip, Long version) {
+        return ipLocationMongoCrudRepository.deleteByIpAndVersionLessThan(ip, version);
+    }
 }

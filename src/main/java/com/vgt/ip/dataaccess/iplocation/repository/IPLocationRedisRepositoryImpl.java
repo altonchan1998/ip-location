@@ -18,6 +18,12 @@ public class IPLocationRedisRepositoryImpl {
     private final ReactiveRedisOperations<String, IPLocationMongoEntity> ipLocationOps;
     private final RedisKeyMapper redisKeyMapper;
 
+    public Mono<Boolean> deleteByIP(String ip) {
+        return ipLocationOps
+                .opsForValue()
+                .delete(redisKeyMapper.toIPLocationKey(ip));
+    }
+
     public Mono<IPLocationMongoEntity> findByIP(String ip) {
         return ipLocationOps
                 .opsForValue()

@@ -17,12 +17,12 @@ public class IPLocationVersionRepositoryImpl implements IPLocationVersionReposit
     private volatile Long ipLocationLocalVersion = -1L;
 
     @Override
-    public void saveIPLocationLocalVersion(Long version) {
+    public void saveLocalIPLocationVersion(Long version) {
         ipLocationLocalVersion = version;
     }
 
     @Override
-    public Long findIpLocationLocalVersion() {
+    public Long findLocalIpLocationVersion() {
         return ipLocationLocalVersion;
     }
 
@@ -30,6 +30,4 @@ public class IPLocationVersionRepositoryImpl implements IPLocationVersionReposit
     public Mono<Long> findRemoteIPLocationVersion() {
         return ipLocationVersionRedisRepository.getRedisIPLocationVersion();
     }
-
-
 }
