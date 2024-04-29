@@ -1,0 +1,16 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout>`
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [tid:%X{traceId},sid:%X{spanId}] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <logger name="io.micrometer.core.instrument.MeterRegistry" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
