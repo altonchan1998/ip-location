@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+
 import java.util.concurrent.TimeUnit;
 
 
@@ -16,8 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class IPLocationVersionRefreshScheduler {
     private final IPLocationApplicationService ipLocationApplicationService;
 
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS, initialDelay = 5)
+    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
     public void run() {
-        ipLocationApplicationService.refreshLocalIPLocationVersion().subscribe();
+        ipLocationApplicationService.refreshLocalIPLocationVersion()
+                .subscribe();
     }
 }

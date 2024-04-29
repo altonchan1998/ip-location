@@ -7,15 +7,12 @@ import com.vgt.ip.dataaccess.iplocation.repository.IPLocationMongoRepositoryImpl
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationDTO;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationRepository;
 import com.vgt.ip.dataaccess.iplocation.repository.IPLocationRedisRepositoryImpl;
-import com.vgt.ip.domain.core.valueobject.IPAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,8 +24,9 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
 
     private final IPLocationDataAccessMapper ipLocationDataAccessMapper;
 
-    public Mono<Void> clearLocalCache() {
-        return ipLocationCaffeineRepositoryImpl.cleanAll();
+    public void clearLocalCache() {
+         ipLocationCaffeineRepositoryImpl.cleanAll()
+                .subscribe();
     }
 
     @Override
@@ -41,31 +39,26 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
     }
 
     @Override
-    public Mono<IPLocationDTO> findByIPAddress(IPAddress ipAddress) {
-        if (Objects.isNull(ipAddress)) {
-            throw new IllegalArgumentException("ipAddress cannot be null");
-        }
-
-        String ip = ipAddress.getIp();
+    public Mono<IPLocationDTO> findByIP(String ip) {
         return ipLocationCaffeineRepositoryImpl.findIPLocationByIP(ip)
-                .switchIfEmpty(ipLocationRedisRepositoryImpl.findByIP(ip))
-                .switchIfEmpty(ipLocationMongoRepositoryImpl.findByIP(ip).doOnNext(this::saveToRedis))
-                .map(ipLocationDataAccessMapper::toIPLocationDTO);
-    }
-
-    @Override
-    public Mono<Void> buildLocalCache(List<String> ipList) {
-        return Flux.fromIterable(ipList)
-                .flatMap(ipLocationRedisRepositoryImpl::findByIP)
-                .doOnNext(it -> ipLocationCaffeineRepositoryImpl.save(it).subscribe())
-                .then();
-
+                .switchIfEmpty(
+                        ipLocationRedisRepositoryImpl.findByIP(ip)
+                                .doOnNext(this::saveToCaffeine))
+                .switchIfEmpty(
+                        ipLocationMongoRepositoryImpl.findByIP(ip)
+                                .doOnNext(this::saveToRedis)
+                ).map(ipLocationDataAccessMapper::toIPLocationDTO);
     }
 
     private void saveToRedis(IPLocationMongoEntity entity) {
         ipLocationRedisRepositoryImpl.save(entity)
                 .doOnSubscribe(s -> log.debug("Saving IPLocation of {} to Redis", entity.getIp()))
                 .doOnSuccess(s -> log.debug("Saved IPLocation of {} to Redis", entity.getIp()))
+                .subscribe();
+    }
+
+    private void saveToCaffeine(IPLocationMongoEntity entity) {
+        ipLocationCaffeineRepositoryImpl.save(entity)
                 .subscribe();
     }
 }

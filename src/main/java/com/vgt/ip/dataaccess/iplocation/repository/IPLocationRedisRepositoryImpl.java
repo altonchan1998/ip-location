@@ -21,7 +21,10 @@ public class IPLocationRedisRepositoryImpl {
     public Mono<Boolean> deleteByIP(String ip) {
         return ipLocationOps
                 .opsForValue()
-                .delete(redisKeyMapper.toIPLocationKey(ip));
+                .delete(redisKeyMapper.toIPLocationKey(ip))
+                .doOnSubscribe(s -> log.debug("Deleting IPLocation of {} in Redis", ip))
+                .doOnSuccess(s -> log.debug("Deleted IPLocation of {} in Redis", ip))
+                .onErrorMap(e -> new IPApplicationDataAccessException("Delete IPLocation of " + ip + " in Redis failed"));
     }
 
     public Mono<IPLocationMongoEntity> findByIP(String ip) {
@@ -29,14 +32,16 @@ public class IPLocationRedisRepositoryImpl {
                 .opsForValue()
                 .get(redisKeyMapper.toIPLocationKey(ip))
                 .doOnSubscribe(s -> log.debug("Finding IPLocation of {} in Redis", ip))
-                .onErrorMap(it -> new IPApplicationException("Find IPLocation of " + ip + " in Redis failed"));
+                .doOnSuccess(s -> log.debug("Found IPLocation of {} in Redis", ip))
+                .onErrorMap(it -> new IPApplicationDataAccessException("Find IPLocation of " + ip + " in Redis failed"));
     }
 
     public Mono<Boolean> save(IPLocationMongoEntity entity) {
         return ipLocationOps
                 .opsForValue()
                 .set(redisKeyMapper.toIPLocationKey(entity.getIp()), entity)
-                .doOnSuccess(it -> log.debug("Save IPLocation to Redis success, ip: {}", entity.getIp()))
+                .doOnSubscribe(s -> log.debug("Saving IPLocation to Redis, ip: {}", entity.getIp()))
+                .doOnSuccess(it -> log.debug("Saved IPLocation to Redis, ip: {}", entity.getIp()))
                 .onErrorMap(e -> new IPApplicationDataAccessException("Save IPLocation of " + entity.getIp() + " to Redis failed"));
     }
 }

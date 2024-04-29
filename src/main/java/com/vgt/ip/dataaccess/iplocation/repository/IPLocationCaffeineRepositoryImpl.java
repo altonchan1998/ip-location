@@ -35,14 +35,16 @@ public class IPLocationCaffeineRepositoryImpl {
         return Mono.fromRunnable(() -> cache.asMap().remove(key))
                 .doOnSubscribe(s -> log.debug("Removing IPLocation of {} from Caffeine Cache", key))
                 .doOnSuccess(s -> log.debug("Removed IPLocation of {} from Caffeine Cache", key))
-                .then();
+                .then()
+                .onErrorMap(e -> new IPApplicationDataAccessException("Remove IPLocation of " + key + " from Caffeine Cache failed"));
     }
 
     public Mono<Void> cleanAll() {
         return Mono.fromRunnable(() -> cache.asMap().clear())
                 .doOnSubscribe(s -> log.debug("Clearing IPLocation Caffeine Cache"))
                 .doOnSuccess(s -> log.debug("IPLocation Caffeine Cache Cleared"))
-                .then();
+                .then()
+                .onErrorMap(e -> new IPApplicationDataAccessException("Clear IPLocation Caffeine Cache failed"));
     }
 
 }

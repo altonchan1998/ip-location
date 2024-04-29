@@ -5,7 +5,6 @@ import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
 import com.vgt.ip.domain.applicationservice.mapper.IPLocationApplicationServiceDataMapper;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationVersionRepository;
-import com.vgt.ip.domain.core.valueobject.IPAddress;
 import com.vgt.ip.exception.IPLocationNotFoundException;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +24,8 @@ public class IPLocationQueryHandler implements Handler<IPLocationQuery, Result<I
     private final IPLocationVersionRepository ipLocationVersionRepository;
 
     public Mono<Result<IPLocationResponse>> handle(IPLocationQuery query) {
-        log.debug("Handling IPLocationQuery: {}", query);
-        IPAddress ipAddress = new IPAddress(query.getIp());
-
         // TODO: Test Behaviour
-        return ipLocationRepository.findByIPAddress(ipAddress)
+        return ipLocationRepository.findByIP(query.getIp())
                 .switchIfEmpty(Mono.error(new IPLocationNotFoundException(query.getIp())))
                 .filter(it -> isVersionValid.test(it.getVersion(), ipLocationVersionRepository.findLocalIpLocationVersion()))
                 .map(ipLocationApplicationServiceDataMapper::toResult)
@@ -39,10 +35,10 @@ public class IPLocationQueryHandler implements Handler<IPLocationQuery, Result<I
 
     private Mono<Result<IPLocationResponse>> deleteOutdatedRecordAndFindByIP(String ip) {
         return ipLocationRepository.removeByIPAndVersionLessThan(ip, ipLocationVersionRepository.findLocalIpLocationVersion())
-                .then(ipLocationRepository.findByIPAddress(new IPAddress(ip)))
+                .then(ipLocationRepository.findByIP(ip))
                 .map(ipLocationApplicationServiceDataMapper::toResult);
     }
 
-    private final BiPredicate<Long, Long> isVersionValid = (dataVersion, localVersion)-> dataVersion >= localVersion;
+    private final BiPredicate<Long, Long> isVersionValid = (dataVersion, localVersion) -> dataVersion >= localVersion;
 
 }

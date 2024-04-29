@@ -13,15 +13,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-
-//    @Bean
-//    ReactiveRedisOperations<String, IPLocationMongoEntity> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
-//        Jackson2JsonRedisSerializer<IPLocationMongoEntity> serializer = new Jackson2JsonRedisSerializer<>(IPLocationMongoEntity.class);
-//        RedisSerializationContext.RedisSerializationContextBuilder<String, IPLocationMongoEntity> builder = RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
-//        RedisSerializationContext<String, IPLocationMongoEntity> context = builder.value(serializer).build();
-//
-//        return new ReactiveRedisTemplate<>(factory, context);
-//    }
     @Bean
     ReactiveRedisOperations<String, IPLocationMongoEntity> ipLocationOperations(ReactiveRedisConnectionFactory factory) {
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
