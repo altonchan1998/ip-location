@@ -30,8 +30,8 @@ public class IPLocationApplicationServiceImpl implements IPLocationApplicationSe
 
     @Override
     public Mono<Void> refreshLocalIPLocationVersion() {
+        log.info("Local IPLocationVersion refresh started");
         return versionRefreshCommandHandler.handle(null)
-                .doOnSubscribe(unused -> log.info("Local IPLocationVersion refresh started"))
                 .doOnSuccess(unused -> log.info("Local IPLocationVersion refresh finished"))
                 .doOnError(error -> log.error("Local IPLocationVersion refresh failed", error));
     }

@@ -42,6 +42,7 @@ public class IPLocationBackwardCompatibleServiceImpl implements IPLocationBackwa
     private Mono<Object> emptyMapOrIPInfo(String ip) {
         return Mono.defer(() -> {
             if (!ipHelper.isValidIP(ip)) {
+                log.warn("Invalid IP: {}", ip);
                 return Mono.just(Collections.emptyMap());
             }
 
@@ -49,7 +50,8 @@ public class IPLocationBackwardCompatibleServiceImpl implements IPLocationBackwa
                             ip,
                             ipLocationVersionRepository.findLocalIpLocationVersion()
                     )
-                    .map(it -> it);
+                    .map(it -> (Object) it)
+                    .defaultIfEmpty(Collections.emptyMap());
         });
     }
 

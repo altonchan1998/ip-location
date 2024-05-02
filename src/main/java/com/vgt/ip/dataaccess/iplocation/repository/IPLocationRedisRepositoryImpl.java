@@ -32,7 +32,6 @@ public class IPLocationRedisRepositoryImpl {
                 .opsForValue()
                 .get(redisKeyMapper.toIPLocationKey(ip))
                 .doOnSubscribe(s -> log.debug("Finding IPLocation of {} in Redis", ip))
-                .doOnSuccess(s -> log.debug("Found IPLocation of {} in Redis", ip))
                 .onErrorMap(it -> new IPApplicationDataAccessException("Find IPLocation of " + ip + " in Redis failed"));
     }
 

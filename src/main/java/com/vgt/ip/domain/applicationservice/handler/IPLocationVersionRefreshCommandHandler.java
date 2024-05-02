@@ -36,7 +36,7 @@ public class IPLocationVersionRefreshCommandHandler implements Handler<Void, Voi
                 .doOnNext(remoteVersion -> ipLocationRepository.clearLocalCache())
                 .doOnNext(
                         remoteVersion -> Mono.fromRunnable(() -> ipLocationVersionRepository.saveLocalIPLocationVersion(remoteVersion))
-                                .doOnSuccess(unused1 -> log.info("Local IPLocationVersion updated: {}", remoteVersion))
+                                .doOnSuccess(unused1 -> log.info("Local IPLocationVersion updated to {}", remoteVersion))
                                 .subscribe()
                 )
                 .then();

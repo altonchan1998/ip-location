@@ -32,7 +32,6 @@ public class IPHelper {
     }
 
     public boolean isValidIP(String ip) {
-        log.info("[{}][IP] check valid ip", ip);
         return pattern.matcher(ip).matches();
     }
 

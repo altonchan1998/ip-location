@@ -26,7 +26,6 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
 
     public void clearLocalCache() {
          ipLocationCaffeineRepositoryImpl.cleanAll()
-                 .doOnSuccess(s -> log.debug("Cleared Caffeine"))
                 .subscribe();
     }
 
@@ -37,11 +36,10 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
                 .flatMap(it -> deleteFromCaffeineIfVersionLessThan(it, version))
                 .switchIfEmpty(
                         ipLocationRedisRepositoryImpl.findByIP(ip)
-                                .flatMap(it -> deleteFromCaffeineIfVersionLessThan(it, version))
+                                .flatMap(it -> deleteFromRedisIfVersionLessThan(it, version))
                                 .doOnNext(this::saveToCaffeine))
                 .switchIfEmpty(
                         ipLocationMongoRepositoryImpl.findByIPAndVersionGreaterThanEqual(ip, version)
-                                .flatMap(it -> deleteFromRedisIfVersionLessThan(it, version))
                                 .doOnNext(this::saveToRedis)
                 ).map(ipLocationDataAccessMapper::toIPLocationDTO);
     }
@@ -61,7 +59,8 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
     private Mono<IPLocationMongoEntity> deleteFromCaffeineIfVersionLessThan(IPLocationMongoEntity entity, long version) {
         return Mono.defer(() -> {
             if (entity.getVersion() < version) {
-                ipLocationCaffeineRepositoryImpl.deleteByIP(entity.getIp());
+                log.debug("Entity version {} of IP {} is less than version {}", entity.getVersion(), entity.getIp(), version);
+                ipLocationCaffeineRepositoryImpl.deleteByIP(entity.getIp()).subscribe();
                 return Mono.empty();
             }
 
@@ -72,7 +71,8 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
     private Mono<IPLocationMongoEntity> deleteFromRedisIfVersionLessThan(IPLocationMongoEntity entity, long version) {
         return Mono.defer(() -> {
             if (entity.getVersion() < version) {
-                ipLocationRedisRepositoryImpl.deleteByIP(entity.getIp());
+                log.debug("Entity version {} of IP {} is less than version {}", entity.getVersion(), entity.getIp(), version);
+                ipLocationRedisRepositoryImpl.deleteByIP(entity.getIp()).subscribe();
                 return Mono.empty();
             }
 
