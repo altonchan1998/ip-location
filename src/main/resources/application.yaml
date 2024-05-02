@@ -18,7 +18,7 @@ spring:
 logging:
   level:
     com:
-      vgt: INFO
+      vgt: DEBUG
 
 server:
   port: 8081

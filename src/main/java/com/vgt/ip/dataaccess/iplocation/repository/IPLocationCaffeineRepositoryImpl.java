@@ -31,12 +31,12 @@ public class IPLocationCaffeineRepositoryImpl {
                 .onErrorMap(e -> new IPApplicationDataAccessException("Save IPLocation of " + entity.getIp() + " to Caffeine Cache failed"));
     }
 
-    public Mono<Void> deleteByKey(String key) {
-        return Mono.fromRunnable(() -> cache.asMap().remove(key))
-                .doOnSubscribe(s -> log.debug("Removing IPLocation of {} from Caffeine Cache", key))
-                .doOnSuccess(s -> log.debug("Removed IPLocation of {} from Caffeine Cache", key))
+    public Mono<Void> deleteByIP(String ip) {
+        return Mono.fromRunnable(() -> cache.asMap().remove(ip))
+                .doOnSubscribe(s -> log.debug("Removing IPLocation of {} from Caffeine Cache", ip))
+                .doOnSuccess(s -> log.debug("Removed IPLocation of {} from Caffeine Cache", ip))
                 .then()
-                .onErrorMap(e -> new IPApplicationDataAccessException("Remove IPLocation of " + key + " from Caffeine Cache failed"));
+                .onErrorMap(e -> new IPApplicationDataAccessException("Remove IPLocation of " + ip + " from Caffeine Cache failed"));
     }
 
     public Mono<Void> cleanAll() {

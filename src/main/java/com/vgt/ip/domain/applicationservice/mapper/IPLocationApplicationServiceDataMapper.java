@@ -40,4 +40,6 @@ public class IPLocationApplicationServiceDataMapper {
         return IPLocationDTO.builder()
                 .build();
     }
+
+
 }

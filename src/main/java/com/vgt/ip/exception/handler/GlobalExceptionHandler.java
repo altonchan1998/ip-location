@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleException(Exception exception) {
-//        log.error(exception.getMessage(), exception);
+        log.error(exception.getMessage(), exception);
         return new Result<>(ResponseConstants.RESPONSE_CODE_ERROR, null, "Unexpected error");
     }
 

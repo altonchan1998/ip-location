@@ -21,6 +21,6 @@ public class IPLocationMongoEntity implements Serializable {
     private String id;
     private String primaryInfoKey;
     private String ip;
-    private Long version;
+    private long version;
     private Map<String, IPLocationDetailEntity> allInfo = Collections.emptyMap();
 }

@@ -14,17 +14,17 @@ import reactor.core.publisher.Mono;
 public class IPLocationMongoRepositoryImpl {
     private final IPLocationMongoCrudRepository ipLocationMongoCrudRepository;
 
-    public Mono<IPLocationMongoEntity> findByIP(String ip) {
-        return ipLocationMongoCrudRepository.findByIp(ip)
-                .doOnSubscribe(s -> log.debug("Finding IPLocation of {} in Mongo", ip))
-                .doOnSuccess(s -> log.debug("Found IPLocation of {} in Mongo", ip))
-                .onErrorMap(e -> new IPApplicationDataAccessException("Find IPLocation of " + ip + " in Mongo failed"));
+    public Mono<IPLocationMongoEntity> findByIPAndVersionGreaterThanEqual(String ip, long version) {
+        return ipLocationMongoCrudRepository.findByIpAndVersionGreaterThanEqual(ip, version)
+                .doOnSubscribe(s -> log.debug("Finding IPLocation of IP: {} and Version: {} in Mongo", ip, version))
+                .doOnSuccess(s -> log.debug("Found IPLocation of IP: {} and Version: {} in Mongo", ip, version))
+                .onErrorMap(e -> new IPApplicationDataAccessException("Find IPLocation of IP: " + ip + " and Version: " + version + " in Mongo failed"));
     }
 
-    public Mono<Void> deleteByIpAndVersionLessThan(String ip, Long version) {
+    public Mono<Void> deleteByIpAndVersionLessThan(String ip, long version) {
         return ipLocationMongoCrudRepository.deleteByIpAndVersionLessThan(ip, version)
-                .doOnSubscribe(s -> log.debug("Deleting IPLocation of {} in Mongo", ip))
-                .doOnSuccess(s -> log.debug("Deleted IPLocation of {} in Mongo", ip))
-                .onErrorMap(e -> new IPApplicationDataAccessException("Delete IPLocation of " + ip + " in Mongo failed"));
+                .doOnSubscribe(s -> log.debug("Deleting IPLocation of IP: {} and Version: {} in Mongo", ip, version))
+                .doOnSuccess(s -> log.debug("Deleted IPLocation of IP: {} and Version: {} in Mongo", ip, version))
+                .onErrorMap(e -> new IPApplicationDataAccessException("Delete IPLocation of IP: " + ip + " and Version: " + version + " in Mongo failed"));
     }
 }

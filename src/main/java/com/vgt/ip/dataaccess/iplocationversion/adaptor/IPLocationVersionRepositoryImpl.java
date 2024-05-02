@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono;
 public class IPLocationVersionRepositoryImpl implements IPLocationVersionRepository {
     private final IPLocationVersionRedisRepository ipLocationVersionRedisRepository;
 
-    private volatile Long ipLocationLocalVersion = -1L;
+    private volatile long ipLocationLocalVersion = -1L;
 
     @Override
-    public void saveLocalIPLocationVersion(Long version) {
+    public void saveLocalIPLocationVersion(long version) {
         ipLocationLocalVersion = version;
     }
 

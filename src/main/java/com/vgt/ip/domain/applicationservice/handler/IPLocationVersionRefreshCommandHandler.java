@@ -33,12 +33,12 @@ public class IPLocationVersionRefreshCommandHandler implements Handler<Void, Voi
         return ipLocationVersionRepository.findRemoteIPLocationVersion()
                 .doOnSuccess(remoteVersion -> log.info("Remote IPLocationVersion: {}, Local IPLocationVersion: {}", remoteVersion, ipLocationVersionRepository.findLocalIpLocationVersion()))
                 .filter(remoteVersion -> canUpdateIPLocationLocalVersion.test(remoteVersion, ipLocationVersionRepository.findLocalIpLocationVersion()))
+                .doOnNext(remoteVersion -> ipLocationRepository.clearLocalCache())
                 .doOnNext(
                         remoteVersion -> Mono.fromRunnable(() -> ipLocationVersionRepository.saveLocalIPLocationVersion(remoteVersion))
                                 .doOnSuccess(unused1 -> log.info("Local IPLocationVersion updated: {}", remoteVersion))
                                 .subscribe()
                 )
-                .doOnNext(remoteVersion -> ipLocationRepository.clearLocalCache())
                 .then();
     }
 }

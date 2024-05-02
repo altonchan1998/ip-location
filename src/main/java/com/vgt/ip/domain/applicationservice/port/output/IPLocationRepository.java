@@ -7,7 +7,5 @@ import reactor.core.publisher.Mono;
 public interface IPLocationRepository {
     void clearLocalCache();
 
-    Mono<Void> removeByIPAndVersionLessThan(String ip, Long version);
-
-    Mono<IPLocationDTO> findByIP(String ip);
+    Mono<IPLocationDTO> findByIPAndVersionNotLessThan(String ip, long version);
 }

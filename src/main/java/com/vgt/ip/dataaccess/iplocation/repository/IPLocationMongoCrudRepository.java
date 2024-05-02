@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface IPLocationMongoCrudRepository extends ReactiveCrudRepository<IPLocationMongoEntity, String> {
-    Mono<IPLocationMongoEntity> findByIp(String ip);
-    Mono<Void> deleteByIpAndVersionLessThan(String ip, Long version);
+    Mono<IPLocationMongoEntity> findByIpAndVersionGreaterThanEqual(String ip, long version);
+    Mono<Void> deleteByIpAndVersionLessThan(String ip, long version);
 }

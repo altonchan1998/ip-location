@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IPLocationDTO {
     private String primaryInfo;
-    private Long version;
+    private long version;
 }

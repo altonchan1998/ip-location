@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,26 +26,22 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
 
     public void clearLocalCache() {
          ipLocationCaffeineRepositoryImpl.cleanAll()
+                 .doOnSuccess(s -> log.debug("Cleared Caffeine"))
                 .subscribe();
     }
 
-    @Override
-    public Mono<Void> removeByIPAndVersionLessThan(String ip, Long version) {
-        return Mono.zip(
-                ipLocationCaffeineRepositoryImpl.deleteByKey(ip),
-                ipLocationRedisRepositoryImpl.deleteByIP(ip),
-                ipLocationMongoRepositoryImpl.deleteByIpAndVersionLessThan(ip, version)
-        ).then();
-    }
 
     @Override
-    public Mono<IPLocationDTO> findByIP(String ip) {
+    public Mono<IPLocationDTO> findByIPAndVersionNotLessThan(String ip, long version) {
         return ipLocationCaffeineRepositoryImpl.findIPLocationByIP(ip)
+                .flatMap(it -> deleteFromCaffeineIfVersionLessThan(it, version))
                 .switchIfEmpty(
                         ipLocationRedisRepositoryImpl.findByIP(ip)
+                                .flatMap(it -> deleteFromCaffeineIfVersionLessThan(it, version))
                                 .doOnNext(this::saveToCaffeine))
                 .switchIfEmpty(
-                        ipLocationMongoRepositoryImpl.findByIP(ip)
+                        ipLocationMongoRepositoryImpl.findByIPAndVersionGreaterThanEqual(ip, version)
+                                .flatMap(it -> deleteFromRedisIfVersionLessThan(it, version))
                                 .doOnNext(this::saveToRedis)
                 ).map(ipLocationDataAccessMapper::toIPLocationDTO);
     }
@@ -60,5 +56,27 @@ public class IPLocationRepositoryImpl implements IPLocationRepository {
     private void saveToCaffeine(IPLocationMongoEntity entity) {
         ipLocationCaffeineRepositoryImpl.save(entity)
                 .subscribe();
+    }
+
+    private Mono<IPLocationMongoEntity> deleteFromCaffeineIfVersionLessThan(IPLocationMongoEntity entity, long version) {
+        return Mono.defer(() -> {
+            if (entity.getVersion() < version) {
+                ipLocationCaffeineRepositoryImpl.deleteByIP(entity.getIp());
+                return Mono.empty();
+            }
+
+            return Mono.just(entity);
+        });
+    }
+
+    private Mono<IPLocationMongoEntity> deleteFromRedisIfVersionLessThan(IPLocationMongoEntity entity, long version) {
+        return Mono.defer(() -> {
+            if (entity.getVersion() < version) {
+                ipLocationRedisRepositoryImpl.deleteByIP(entity.getIp());
+                return Mono.empty();
+            }
+
+            return Mono.just(entity);
+        });
     }
 }
