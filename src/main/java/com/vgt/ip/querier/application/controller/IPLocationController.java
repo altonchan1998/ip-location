@@ -33,7 +33,7 @@ public class IPLocationController {
 
     @GetMapping("/getIp")
     public Mono<Result<Object>> getIp(
-            @RequestParam(name = "ip", required = false) List<String> ipList,
+            @RequestParam(name = "ip", required = false, defaultValue = "") List<String> ipList,
             @RequestHeader Map<String, String> headers
     ) {
         return ipLocationBackwardCompatibleService.getIp(

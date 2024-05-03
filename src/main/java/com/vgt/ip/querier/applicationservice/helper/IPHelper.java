@@ -20,19 +20,25 @@ public class IPHelper {
         log.info("toIPFlux: {}", ipList);
         log.info("headers: {}", headers);
         return Flux.fromIterable(ipList)
-                .switchIfEmpty(Flux.defer(() -> Flux.just(getIpFromHeader(headers, "true-client-ip"))))
-                .switchIfEmpty(Flux.defer(() -> Flux.just(getIpFromHeader(headers, "x-original-forwarded-for"))))
-                .switchIfEmpty(Flux.defer(() -> Flux.just(getIpFromHeader(headers, "x-forwarded-for"))))
+                .switchIfEmpty(getIpFromHeader(headers, "true-client-ip"))
+                .switchIfEmpty(getIpFromHeader(headers, "x-original-forwarded-for"))
+                .switchIfEmpty(getIpFromHeader(headers, "x-forwarded-for"))
                 .switchIfEmpty(Flux.defer(() -> Flux.just(defaultIP)));
     }
 
-    private String getIpFromHeader(Map<String, String> headers, String name) {
-        String[] ipList = headers.get(name).split(",");
-        return ipList[0].trim();
+    private Flux<String> getIpFromHeader(Map<String, String> headers, String name) {
+        String ipAddress = headers.get(name);
+        if (ipAddress != null && !ipAddress.isEmpty()) {
+            String[] ipList = headers.get(name).split(",");
+            return Flux.just(ipList[0].trim());
+        } else {
+            return Flux.empty();
+        }
     }
 
     public boolean isValidIP(String ip) {
         return pattern.matcher(ip).matches();
     }
+
 
 }
