@@ -1,4 +1,4 @@
-package com.vgt.ip.domain.applicationservice.mapper;
+package com.vgt.ip.mapper;
 
 import com.vgt.ip.constant.ResponseConstants;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationDTO;

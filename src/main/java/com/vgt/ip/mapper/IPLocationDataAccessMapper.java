@@ -1,4 +1,4 @@
-package com.vgt.ip.dataaccess.iplocation.mapper;
+package com.vgt.ip.mapper;
 
 import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationDTO;

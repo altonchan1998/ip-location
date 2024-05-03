@@ -10,6 +10,8 @@ import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
+import static com.vgt.ip.constant.RedisConstants.REDIS_TTL_DURATION_DEFAULT;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,7 +40,7 @@ public class IPLocationRedisRepositoryImpl {
     public Mono<Boolean> save(IPLocationMongoEntity entity) {
         return ipLocationOps
                 .opsForValue()
-                .set(redisKeyMapper.toIPLocationKey(entity.getIp()), entity)
+                .set(redisKeyMapper.toIPLocationKey(entity.getIp()), entity, REDIS_TTL_DURATION_DEFAULT)
                 .doOnSubscribe(s -> log.debug("Saving IPLocation to Redis, ip: {}", entity.getIp()))
                 .doOnSuccess(it -> log.debug("Saved IPLocation to Redis, ip: {}", entity.getIp()))
                 .onErrorMap(e -> new IPApplicationDataAccessException("Save IPLocation of " + entity.getIp() + " to Redis failed"));

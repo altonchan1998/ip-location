@@ -4,16 +4,13 @@ import com.vgt.ip.domain.applicationservice.dto.Result;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationQuery;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationResponse;
 import com.vgt.ip.domain.applicationservice.helper.IPHelper;
-import com.vgt.ip.domain.applicationservice.mapper.IPLocationApplicationServiceDataMapper;
+import com.vgt.ip.mapper.IPLocationApplicationServiceDataMapper;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationVersionRepository;
-import com.vgt.ip.exception.IPLocationNotFoundException;
 import com.vgt.ip.domain.applicationservice.port.output.IPLocationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import java.util.function.BiPredicate;
 
 @Slf4j
 @RequiredArgsConstructor

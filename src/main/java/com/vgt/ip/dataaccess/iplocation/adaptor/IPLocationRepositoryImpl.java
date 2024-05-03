@@ -1,7 +1,7 @@
 package com.vgt.ip.dataaccess.iplocation.adaptor;
 
 import com.vgt.ip.dataaccess.iplocation.entity.IPLocationMongoEntity;
-import com.vgt.ip.dataaccess.iplocation.mapper.IPLocationDataAccessMapper;
+import com.vgt.ip.mapper.IPLocationDataAccessMapper;
 import com.vgt.ip.dataaccess.iplocation.repository.IPLocationCaffeineRepositoryImpl;
 import com.vgt.ip.dataaccess.iplocation.repository.IPLocationMongoRepositoryImpl;
 import com.vgt.ip.domain.applicationservice.dto.iplocation.IPLocationDTO;
